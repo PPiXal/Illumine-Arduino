@@ -8,9 +8,9 @@ If you encounter any issues, please do not hesitate to reach out to us for assis
 
 #include <ESP8266WiFi.h>
 
-String ssid = "YourSSID";
-String password = "YourPassword";
-WiFiServer server(80); // Server Port 80
+String ssid = "YourSSID"; // Put your SSID from wifi route or your Hotspot
+String password = "YourPassword"; // Put your Password from wifi route or your Hotspot
+WiFiServer server(80); // Set Server at Port 80
 
 // getPins & statePin
 const int ledPin = 2;
@@ -31,6 +31,9 @@ void __preload() {
   // ResetPinMode
   pinMode(ledPin, OUTPUT);
   digitalWrite(ledPin, LOW);
+  
+  // Settings WiFi Module
+  WiFi.setAutoReconnect(true);
 }
 
 bool recon_t() {
@@ -112,28 +115,6 @@ void handleIlluminateState(WiFiClient client, String request) {
   digitalWrite(ledPin, HIGH);
 }
 
-void WiFi_Modify() {
-  while (true) {
-    if (Serial.available() > 0) {
-      String Basic_CIP = Serial.readString();
-      int q_index = Basic_CIP.indexOf('?');
-
-      if (q_index >= 0) {
-        String ssid_new = Basic_CIP.substring(0, q_index);
-        String password_new = Basic_CIP.substring(q_index+1);
-
-        WiFi.begin(ssid_new, password_new);
-        bool con_suc = recon_t();
-        if (con_suc) {
-          server.begin();
-        }
-        break;
-      }
-    }
-  }
-}
-
-
 void setup() {
   __preload();
   
@@ -146,11 +127,7 @@ void setup() {
 }
 
 void loop() {
-  if (WiFi.isConnected() && Serial.available() > 0) {
-    WiFi.disconnect(false, true);
-    WiFi_Modify();
-  }
-  else if (!WiFi.isConnected() && Serial.available() <= 0) {
+  if (!WiFi.isConnected()) {
     WiFi.reconnect();
     bool con_suc = recon_t();
     if (con_suc) {
