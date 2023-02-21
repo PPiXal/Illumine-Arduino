@@ -59,7 +59,7 @@ This project shows how to use an Arduino Uno R3 and an ESP8266 WiFi board to tur
 | **Status** | **Task** | **Start Date** |
 |------------|----------|-----------------|
 | **In Progress** | **Blynk IoT App Compatible** | **2023-02-30** |
-| **Waiting** | **Release WiFi.Configure extensions** | **2023-03-25** |
+| **Waiting** | **Release WiFi.Configure extensions** | **2023-04-25** |
 | **Waiting** | **Next sprint** | **2023-05-01** |
 
 
