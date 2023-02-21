@@ -1,0 +1,33 @@
+# Arduino .gitignore
+
+# Directories
+build/
+dist/
+doc/
+examples/
+extras/
+hardware/
+reference/
+tools/
+test/
+
+# Files
+*.d
+*.pyc
+*.pyo
+*.swp
+*.swo
+*.hex
+*.bin
+*.eep
+*.elf
+*.a
+*.o
+*.map
+*.lst
+*.sym
+*.lss
+*.png
+*.jpg
+*.gif
+*.pdf
