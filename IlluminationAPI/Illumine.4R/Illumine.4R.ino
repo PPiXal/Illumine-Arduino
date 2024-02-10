@@ -9,8 +9,14 @@ int IN(int index) {
 }
 
 // relaysPort:turnBool
-String r1n = "1";
-String r1f = "0";
+String r1n = "1:1";
+String r1f = "0:1";
+String r2n = "1:2";
+String r2f = "0:2";
+String r3n = "1:3";
+String r3f = "0:3";
+String r4n = "1:4";
+String r4f = "0:4";
 
 
 void setup() {
@@ -21,7 +27,7 @@ void setup() {
   pinMode(ledPin, OUTPUT);
   digitalWrite(ledPin, LOW);
 
-  // // Turn Off All light bulb
+  // Turn Off All light bulb
   digitalWrite(relayPin[IN(1)], HIGH);
   digitalWrite(relayPin[IN(2)], HIGH);
   digitalWrite(relayPin[IN(3)], HIGH);
@@ -35,35 +41,32 @@ void loop() {
   // Check for incoming data from the ESP8266
   if (espSerial.available() > 0) {
     String state = espSerial.readStringUntil('\n');
-    Serial.println(state);
     if (state == r1n) {
-      digitalWrite(ledPin, LOW); // Turn on LED for indication
       digitalWrite(relayPin[IN(1)], LOW); // Turn the relay on to turn the light bulb on
     }
     else if (state == r1f) {
-      digitalWrite(ledPin, HIGH); // Turn off LED for indication
       digitalWrite(relayPin[IN(1)], HIGH); // Turn the relay off to turn the light bulb off
     }
 
-    // else if (state == r2n) {
-    //   digitalWrite(relayPin[IN(2)], LOW); // Turn the relay on to turn the light bulb on
-    // }
-    // else if (state == r2f) {
-    //   digitalWrite(relayPin[IN(2)], HIGH); // Turn the relay off to turn the light bulb off
-    // }
+    else if (state == r2n) {
+      digitalWrite(relayPin[IN(2)], LOW); // Turn the relay on to turn the light bulb on
+    }
+    else if (state == r2f) {
+      digitalWrite(relayPin[IN(2)], HIGH); // Turn the relay off to turn the light bulb off
+    }
 
-    // else if (state == r3n) {
-    //   digitalWrite(relayPin[IN(3)], LOW); // Turn the relay on to turn the light bulb on
-    // }
-    // else if (state == r3f) {
-    //   digitalWrite(relayPin[IN(3)], HIGH); // Turn the relay off to turn the light bulb off
-    // }
+    else if (state == r3n) {
+      digitalWrite(relayPin[IN(3)], LOW); // Turn the relay on to turn the light bulb on
+    }
+    else if (state == r3f) {
+      digitalWrite(relayPin[IN(3)], HIGH); // Turn the relay off to turn the light bulb off
+    }
 
-    // else if (state == r4n) {
-    //   digitalWrite(relayPin[IN(4)], LOW); // Turn the relay on to turn the light bulb on
-    // }
-    // else if (state == r4f) {
-    //   digitalWrite(relayPin[IN(4)], HIGH); // Turn the relay off to turn the light bulb off
-    // }
+    else if (state == r4n) {
+      digitalWrite(relayPin[IN(4)], LOW); // Turn the relay on to turn the light bulb on
+    }
+    else if (state == r4f) {
+      digitalWrite(relayPin[IN(4)], HIGH); // Turn the relay off to turn the light bulb off
+    }
   }
 }

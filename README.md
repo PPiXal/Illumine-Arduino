@@ -36,9 +36,9 @@ This project shows how to use an Arduino Uno R3 and an ESP8266 WiFi board to tur
 
 6. Power up the **AC to DC** power supply.
 
-7. Connect to ESP8266 board via WiFi route at home or your hotspot.
+7. Connect to the ESP8266 board by accessing its self-hosted Access Point (AP). Once connected, you can find your SSID as per your settings. If you haven't set an SSID, the default SSID is Smart Bamboo Lamp with the password 12345678. ~~Connect to ESP8266 board via WiFi route at home or your hotspot.~~ 
 
-8. goto your ip-address example `http://197.172.0.8/`
+8. Access the following IP address: `192.168.4.1` If you cannot find it, please check your Router IP in the network details. ~~goto your ip-address example `http://197.172.0.8/`~~
 
 9. And Enjoy it!
 
@@ -62,6 +62,7 @@ This project shows how to use an Arduino Uno R3 and an ESP8266 WiFi board to tur
 |----------------|------------------|
 | **WiFi** *by Arduino* | **Arduino AVR Boards** *by Arduino* |
 | **Blynk** *by Volodymyr Shymanskyy* `not supported yet` | **esp8266** *by ESP8266 Community* [installation](assets/esp8266%20installation.png) |
+| **WebSockets** *by Markus Sattler* | ---
 
-**<h2>Acknowledgments</h2>**
+<h2>Acknowledgments</h2>
 This project is based on the WiFi library and ~~Blynk library~~ and the circuit diagram and relay module wiring were adapted from [**How to Use Relay With Arduino - Connecting Appliances with Arduino.**](https://www.instructables.com/How-to-use-relay-with-Arduino/)
