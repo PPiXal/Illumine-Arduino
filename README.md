@@ -25,9 +25,9 @@ This project shows how to use an Arduino Uno R3 and an ESP8266 WiFi board to tur
 
 3. Connect the LED light bulb to the **relay module**.
 
-4. Upload the Arduino code `(Illuine.4R.ino)` to the **Arduino Uno R3** using the **Arduino IDE**.
+4. Upload the Arduino code `(hostServer.ino)` to the **Arduino Uno R3** using the **Arduino IDE**.
 
-5. Upload the ESP8266 code `(IlluminateServer.ino)` to the **Generic ESP8266 WiFi** using the **Arduino IDE**.
+5. Upload the ESP8266 code `(mainController.ino)` to the **Generic ESP8266 WiFi** using the **Arduino IDE**.
     - ~~Create a new project in the Blynk app or **Web browser**, and get an authentication token.~~
 
     - ~~Add a button widget to the Blynk app or **web browser**, and configure it to send a value of 1 or 0 to the **Arduino Uno R3**.~~
