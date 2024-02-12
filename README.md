@@ -1,4 +1,9 @@
-<h1>IlluminaAPI::Light Controller via Local web over WiFi</h1>
+<h1>Welcome to the Independent Study Project!</h1>
+This project revolves around independent study, and I am excited to share it with my teacher.
+
+ - Please note that this repository will be archived on February 20, 2024.
+
+<h1>Illumina Project::Light Controller via Local web over WiFi</h1>
 This project shows how to use an Arduino Uno R3 and an ESP8266 WiFi board to turn on/off a light remotely using a mobile app or a web browser.
 
 **<h2>Hardware</h2>**
