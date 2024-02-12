@@ -1,5 +1,5 @@
-<h1>Warning: No Access Point in `main` branches</h1>
-If you need to use Access Point just change branches to <a href="https://github.com/Plxii/Lumina-Arduino/tree/IS-Project">IS-Project</a>
+<h1>Attention: No Access Point Available in `main` Branches</h1>
+If you require access to an Access Point, please switch branches to <a href="https://github.com/Plxii/Lumina-Arduino/tree/IS-Project">IS-Project</a>.
 
 Here, `main` branches is not about `Independent Study Project's`
 
