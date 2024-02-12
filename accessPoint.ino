@@ -1,5 +1,5 @@
 /*
-The Illumina API Project is based on an Arduino Uno 3R and a Generic ESP8266 Module.
+The Illumina Project is based on an Arduino Uno 3R and a Generic ESP8266 Module.
 It aims to provide a solution for remotely controlling lights or illumination through a smartphone by local webSite via WiFi of ESP8266 (Access Point).
 However, please note that this is only a prototype and not a commercial product.
 
