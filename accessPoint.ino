@@ -1,64 +1,165 @@
+/*
+The Illumina API Project is based on an Arduino Uno 3R and a Generic ESP8266 Module.
+It aims to provide a solution for remotely controlling lights or illumination through a smartphone by local webSite via WiFi of ESP8266 (Access Point).
+However, please note that this is only a prototype and not a commercial product.
+
+If you encounter any issues, please do not hesitate to reach out to us for assistance.
+
+/!\ Independent Study Project's Prototype Only /!\
+*/
+
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
-#include <WebSocketsServer.h> // Include the WebSocket library
+#include <WebSocketsServer.h>
 
-// Define WiFi credentials
-const char* ssid = "Smart Bamboo Lamp";
-const char* password = "12345678";
+// // // // // Setup Access Point // // // // //
+String ssid = "Smart Bamboo Lamp"; // SSID Name
+String password = "12345678"; // Password of Access Point
+ESP8266WebServer server(80); // Web Server Port
 
-ESP8266WebServer server(80);
-WebSocketsServer webSocket(81); // Create a WebSocket server on port 81
+// // // // // Setup WebSocket // // // // //
+WebSocketsServer webSockets(81); // WebSocket Port
 
-bool lampState = false;
+// // // // // Relay Path // // // // //
+String r1n = "1";
+String r1f = "0";
 
+// // // // // Setup Variable // // // // //
+const int ledPin = 2;
+bool lightState = false;
+
+
+// Web Root
 void handleRoot() {
-  String content = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>Smart Bamboo Lamp</title></head><body>";
-  
-  if (lampState) {
-    content += "<button onclick=\"turnOff()\">Turn Off</button>";
+  String content = "<!DOCTYPE html><html lang=\"en\"><head><link href='https://fonts.googleapis.com/css?family=Kanit' rel='stylesheet'><meta name=\"viewport\" content=\"width=1024\"><meta charset=\"UTF-8\"><title>Smart Bamboo Lamp</title><style>* {font-family: kanit;}*::-webkit-scrollbar {display: none;}body, html {overflow: hidden;margin: 0;padding: 0;width: 100%;height: 100%;}.container {display: flex;justify-content: center;align-items: center;}a.on {position: relative;display: inline-block;padding: 0.5rem 1rem;color: black;border-radius: 50px;border: 2px solid hsl(120, 100%, 35%);transition: 0.3s ease;text-decoration: none;}a.off {position: relative;display: inline-block;padding: 0.5rem 1rem;color: black;border-radius: 50px;border: 2px solid hsl(0, 100%, 50%);transition: 0.3s ease;text-decoration: none;}a.on:hover {background: hsl(120, 100%, 35%);color: white;transform: translateY(-5px);opacity: initial;box-shadow: 3px 3px 10px rgba(0,0,0,0.4);}a.off:hover {background: hsl(0, 100%, 50%);color: white;transform: translateY(-5px);opacity: initial;box-shadow: 3px 3px 10px rgba(0,0,0,0.4);}a {font-size: 75pt;top: 225pt;}</style></head><body><div class=\"container hidden\">";
+
+  if (lightState) {
+    content += "<a href=\"turnOff\" style=\"max-width: 100%;max-height: 100%; left: 25px\" class=\"off\">Turn Off</a>";
   } else {
-    content += "<button onclick=\"turnOn()\">Turn On</button>";
+    content += "<a href=\"turnOn\" style=\"max-width: 100%;max-height: 100%; right: 25px\" class=\"on\">Turn On</a>";
   }
 
-  content += "<script>var socket = new WebSocket('ws://" + WiFi.softAPIP().toString() + ":81/');";
-  content += "socket.onmessage = function(event) { if(event.data === '1') document.querySelector('button').innerText = 'Turn Off'; else document.querySelector('button').innerText = 'Turn On'; };";
-  content += "function turnOn() { socket.send('1'); } function turnOff() { socket.send('0'); }</script></body></html>";
+  content += "</div></body><script>";
+  content += "var webSocket = new WebSocket('ws://' + window.location.hostname + ':81/');";
+  content += "webSocket.onmessage = function(event) {";
+  content += "  if (event.data === '1') {";
+  content += "    document.querySelector('.on').style.display = 'none';";
+  content += "    document.querySelector('.off').style.display = 'inline-block';";
+  content += "  } else if (event.data === '0') {";
+  content += "    document.querySelector('.off').style.display = 'none';";
+  content += "    document.querySelector('.on').style.display = 'inline-block';";
+  content += "  }";
+  content += "};";
+  content += "function turnOn() { fetch('/turnOn'); }";
+  content += "function turnOff() { fetch('/turnOff'); }";
+  content += "</script></html>";
 
   server.send(200, "text/html", content);
 }
 
+// // // // // WebSockets Recevier // // // // //
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length) {
-  switch(type) {
+  switch (type) {
     case WStype_TEXT:
       if (length == 1 && payload[0] == '1') {
-        lampState = true;
+        lightState = true;
       } else if (length == 1 && payload[0] == '0') {
-        lampState = false;
+        lightState = false;
       }
-      webSocket.broadcastTXT(lampState ? "1" : "0"); // Broadcast the updated lamp state to all clients
+      webSockets.broadcastTXT(lightState ? "1" : "0");
       break;
   }
 }
 
-void setup() {
-  Serial.begin(115200);
-  
-  // Connect to WiFi
-  WiFi.mode(WIFI_AP);
-  WiFi.softAP(ssid, password);
-  // Serial.print("AP IP address: ");
-  // Serial.println(WiFi.softAPIP());
+// // // // // handle Turn On & Turn Off // // // // //
+void handleTurnOn() {
+  digitalWrite(ledPin, LOW);
+  lightState = true;
+  Serial.write(r1n.c_str(), r1n.length());
 
-  // Setup the HTTP server
-  server.on("/", HTTP_GET, handleRoot);
-  server.begin();
+  String content = "<!DOCTYPE html><html lang=\"en\"><head><link href='https://fonts.googleapis.com/css?family=Kanit' rel='stylesheet'><meta name=\"viewport\" content=\"width=1024\"><meta charset=\"UTF-8\"><title>Smart Bamboo Lamp</title><style>* {font-family: kanit;}*::-webkit-scrollbar {display: none;}body, html {overflow: hidden;margin: 0;padding: 0;width: 100%;height: 100%;}.container {display: flex;justify-content: center;align-items: center;}a.on {position: relative;display: inline-block;padding: 0.5rem 1rem;color: black;border-radius: 50px;border: 2px solid hsl(120, 100%, 35%);transition: 0.3s ease;text-decoration: none;}a.off {position: relative;display: inline-block;padding: 0.5rem 1rem;color: black;border-radius: 50px;border: 2px solid hsl(0, 100%, 50%);transition: 0.3s ease;text-decoration: none;}a.on:hover {background: hsl(120, 100%, 35%);color: white;transform: translateY(-5px);opacity: initial;box-shadow: 3px 3px 10px rgba(0,0,0,0.4);}a.off:hover {background: hsl(0, 100%, 50%);color: white;transform: translateY(-5px);opacity: initial;box-shadow: 3px 3px 10px rgba(0,0,0,0.4);}a {font-size: 75pt;top: 225pt;}</style></head><body><div class=\"container hidden\">";
 
-  // Setup the WebSocket server
-  webSocket.begin();
-  webSocket.onEvent(webSocketEvent);
+  if (lightState) {
+    content += "<a href=\"turnOff\" style=\"max-width: 100%;max-height: 100%; left: 25px\" class=\"off\">Turn Off</a>";
+  } else {
+    content += "<a href=\"turnOn\" style=\"max-width: 100%;max-height: 100%; right: 25px\" class=\"on\">Turn On</a>";
+  }
+
+  content += "</div></body><script>";
+  content += "var webSocket = new WebSocket('ws://' + window.location.hostname + ':81/');";
+  content += "webSocket.onmessage = function(event) {";
+  content += "  if (event.data === '1') {";
+  content += "    document.querySelector('.on').style.display = 'none';";
+  content += "    document.querySelector('.off').style.display = 'inline-block';";
+  content += "  } else if (event.data === '0') {";
+  content += "    document.querySelector('.off').style.display = 'none';";
+  content += "    document.querySelector('.on').style.display = 'inline-block';";
+  content += "  }";
+  content += "};";
+  content += "function turnOn() { fetch('/turnOn'); }";
+  content += "function turnOff() { fetch('/turnOff'); }";
+  content += "</script></html>";
+
+  server.send(200, "text/html", content);
+  digitalWrite(ledPin, HIGH);
 }
 
+void handleTurnOff() {
+  digitalWrite(ledPin, LOW);
+  lightState = false;
+  Serial.write(r1f.c_str(), r1n.length());
+
+  String content = "<!DOCTYPE html><html lang=\"en\"><head><link href='https://fonts.googleapis.com/css?family=Kanit' rel='stylesheet'><meta name=\"viewport\" content=\"width=1024\"><meta charset=\"UTF-8\"><title>Smart Bamboo Lamp</title><style>* {font-family: kanit;}*::-webkit-scrollbar {display: none;}body, html {overflow: hidden;margin: 0;padding: 0;width: 100%;height: 100%;}.container {display: flex;justify-content: center;align-items: center;}a.on {position: relative;display: inline-block;padding: 0.5rem 1rem;color: black;border-radius: 50px;border: 2px solid hsl(120, 100%, 35%);transition: 0.3s ease;text-decoration: none;}a.off {position: relative;display: inline-block;padding: 0.5rem 1rem;color: black;border-radius: 50px;border: 2px solid hsl(0, 100%, 50%);transition: 0.3s ease;text-decoration: none;}a.on:hover {background: hsl(120, 100%, 35%);color: white;transform: translateY(-5px);opacity: initial;box-shadow: 3px 3px 10px rgba(0,0,0,0.4);}a.off:hover {background: hsl(0, 100%, 50%);color: white;transform: translateY(-5px);opacity: initial;box-shadow: 3px 3px 10px rgba(0,0,0,0.4);}a {font-size: 75pt;top: 225pt;}</style></head><body><div class=\"container hidden\">";
+
+  if (lightState) {
+    content += "<a href=\"turnOff\" style=\"max-width: 100%;max-height: 100%; left: 25px\" class=\"off\">Turn Off</a>";
+  } else {
+    content += "<a href=\"turnOn\" style=\"max-width: 100%;max-height: 100%; right: 25px\" class=\"on\">Turn On</a>";
+  }
+
+  content += "</div></body><script>";
+  content += "var webSocket = new WebSocket('ws://' + window.location.hostname + ':81/');";
+  content += "webSocket.onmessage = function(event) {";
+  content += "  if (event.data === '1') {";
+  content += "    document.querySelector('.on').style.display = 'none';";
+  content += "    document.querySelector('.off').style.display = 'inline-block';";
+  content += "  } else if (event.data === '0') {";
+  content += "    document.querySelector('.off').style.display = 'none';";
+  content += "    document.querySelector('.on').style.display = 'inline-block';";
+  content += "  }";
+  content += "};";
+  content += "function turnOn() { fetch('/turnOn'); }";
+  content += "function turnOff() { fetch('/turnOff'); }";
+  content += "</script></html>";
+
+  server.send(200, "text/html", content);
+  digitalWrite(ledPin, HIGH);
+}
+
+
+// Setup System
+void setup() {
+  Serial.begin(115200);
+
+  if (password.length() < 8) {
+    Serial.println("Password must be at least 8 characters long.");
+    exit(1);
+  }
+
+  pinMode(ledPin, OUTPUT); // Setup LedPin
+  digitalWrite(ledPin, LOW);
+  WiFi.mode(WIFI_AP); // Changes WiFi Status to "Access Point" instead.
+  WiFi.softAP(ssid, password); // set SSID and Password to Access Point.
+  server.on("/", HTTP_GET, handleRoot);
+  server.on("/turnOn", HTTP_GET, handleTurnOn);
+  server.on("/turnOff", HTTP_GET, handleTurnOff);
+  server.begin();
+  delay(1);
+  digitalWrite(ledPin, HIGH);
+}
+
+// Loop System
 void loop() {
   server.handleClient();
-  webSocket.loop();
+  int numStations = WiFi.softAPgetStationNum();
 }
