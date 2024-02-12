@@ -1,7 +1,9 @@
 <h1>Attention: No Access Point Available in `main` Branches</h1>
 If you require access to an Access Point, please switch branches to <a href="https://github.com/Plxii/Lumina-Arduino/tree/IS-Project">IS-Project</a>.
-
-Here, `main` branches is not about `Independent Study Project's`
+ 
+ (Please note that this repository will be archived on `February 20, 2024`.)
+ 
+ Here, `main` branches is not about `Independent Study Project's`
 
 <h1>Illumina Project::Light Controller via Local web over WiFi</h1>
 This project shows how to use an Arduino Uno R3 and an ESP8266 WiFi board to turn on/off a light remotely using a mobile app or a web browser.
