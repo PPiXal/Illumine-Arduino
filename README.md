@@ -1,5 +1,6 @@
 <h1>Warning: No Access Point in `main` branches</h1>
-If you need to use Access Point just change branches to [`IS-Project`](https://github.com/Plxii/Lumina-Arduino/tree/IS-Project)
+If you need to use Access Point just change branches to <a href="https://github.com/Plxii/Lumina-Arduino/tree/IS-Project">IS-Project</a>
+
 Here, `main` branches is not about `Independent Study Project's`
 
 <h1>IlluminaAPI::Light Controller via Local web over WiFi</h1>
