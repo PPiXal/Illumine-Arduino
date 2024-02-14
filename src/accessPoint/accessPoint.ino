@@ -18,7 +18,7 @@ String password = "12345678"; // Password of Access Point
 ESP8266WebServer server(80); // Web Server Port
 
 // // // // // Setup WebSocket // // // // //
-WebSocketsServer webSockets(81); // WebSocket Port
+WebSocketsServer webSockets(81);
 
 // // // // // Relay Path // // // // //
 String r1n = "1";
@@ -160,6 +160,7 @@ void setup() {
 
 // Loop System
 void loop() {
+  Serial.println(lightState);
   server.handleClient();
   int numStations = WiFi.softAPgetStationNum();
 }
